@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-gov.min.css" />
+    <title>[차세대 HR 아카데미] 나의 인재 유형은?</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="./logo.png" width="163" height="35"></img>
+            </div>
+            <div class="bar" style="margin-top: 11px;"></div>
+            <div class="bar-progress" style="margin-top: 11px;"></div>
+            <img src="./send.png" id="kakao-link-btn" style="margin-top: 8px;"></img>
+        </div>
+        <div class="page first-page">
+            <div class="title">
+                <img src="./back.png"></img>
+                <p>나의 인재 유형은?</p>
+            </div>
+            <div class="description">
+                <p>나는 어떤 인재 유형인지 확인하고<br />차세대 지원하기!<br /><span style="font-size: 16px; color: #ffffff;">🪷 37기 모집 중 🪷</span></p>
+                <button class="start">시작하기</button>
+            </div>
+        </div>
+        <div class="page question-page" style="display: none; top: 30px;">
+            <div class="question">
+                <p>Q. HR 기본기를 탄탄하게 다질 수 있는 HR 교육!<br />내가 더 기대하는 세션은?</p>
+            </div>
+            <div class="answers">
+                <button class="answer answer-1">채용, 성과관리, 조직문화 등의 HRM 세션</button>
+                <button class="answer answer-2">교수설계, 교육평가 등의 HRD 세션</button>
+                <button class="answer answer-3" style="display: none;"></button>
+                <button class="result" style="display: none;"></button>
+            </div>
+        </div>
+        
+        <div class="loading-page" style="display: none;">
+            <div class="loading-all">
+                <div class="loading loading-1"></div>
+                <div class="loading loading-2"></div>
+                <div class="loading loading-3"></div>
+                <div class="loading-4">LOADING...</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <img src="./register.png" alt="register" style="margin-top: 20px;"></img>
+            <a class="register-1" style="cursor: pointer;"></a>
+            <a class="register-2" href="https://nextgeneration-hracademy.career.greetinghr.com/o/144676"></a>
+        </div>
+    </div>
+    <div class="black-container" style="display: none;">
+        <div class="modal">
+            <div class="modal-wrap">
+                <div class="info">
+                    <a href="https://m.blog.naver.com/next_hr_academy/223740166374?referrerCode=1"><img src="./info-1.png"></a>
+                    <p><span class="name">차세대 프리뷰</span><br /># 차세대 활동 소개</p>
+                </div>
+                <div class="info">
+                    <a href="https://m.blog.naver.com/next_hr_academy/223741073357?referrerCode=1"><img src="./info-2.png"></a>
+                    <p><span class="name">차세대 인사이드</span><br /># 수료 OB님 인터뷰</p>
+                </div>
+                <div class="info">
+                    <a href="https://m.blog.naver.com/next_hr_academy/223745277156?referrerCode=1"><img src="./info-3.png"></a>
+                    <p><span class="name">차세대 모집 공고</span><br /># 37기 모집 절차</p>
+                </div>
+                <div class="info">
+                    <a href="https://m.blog.naver.com/next_hr_academy/223745284867?referrerCode=1"><img src="./info-4.png"></a>
+                    <p><span class="name">모집 설명회</span><br /># 실시간 질의응답</p>
+                </div>
+            </div>
+            <p class="modal-desc">이외에도 블로그에서 운영진 인터뷰,<br />인스타그램에서 활동 후기를<br />확인할 수 있어요!</p>
+            <a class="sns-link sns-1" href="https://m.blog.naver.com/next_hr_academy"></a>
+            <a class="sns-link sns-2" href="https://cafe.naver.com/no1hr"></a>
+            <a class="sns-link sns-3" href="https://pf.kakao.com/_ExgmIC"></a>
+            <a class="sns-link sns-4" href="https://www.instagram.com/next_hr_academy/"></a>
+            <img class="sns" src="./info-sns.png">
+            <button class="close">닫기</button>
+        </div>
+    </div>
+</body>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+    const changeZoom = () => {
+        document.body.style.zoom = `${window.innerHeight / 640 * 100}%`;
+    }
+    changeZoom();
+    window.addEventListener('resize', changeZoom);
+
+    let currentQuestion = 0;
+
+    const questionList = ["Q. HR 기본기를 탄탄하게 다질 수 있는 HR 교육!<br />내가 더 기대하는 세션은?",
+                    "Q. 많은 HRer들을 만날 수 있다니!<br />내가 더 관심있는 네트워킹은?",
+                    "Q. 몇 주동안 치열하게 준비했던 프로젝트가 끝났다.<br />나에게 가장 보람찼던 부분은?",
+                    "Q. 차세대 HR 아카데미,<br />이런 점이 끌린다!",
+                    "Q. 내가 37기 차둥이가 된다면?"];
+    const answer1List = ["채용, 성과관리, 조직문화 등의 HRM 세션",
+                   "현업의 이야기를 들을 수 있는 OB네트워킹",
+                   "프로젝트를 준비하는 과정에서 많은 것을 배울 수 있었던 점이 가장 좋았어!",
+                   "HR 관련 전문 지식과 다양한 인사이트를 얻어갈 수 있는 교육 프로그램들",
+                   "매번 호기심을 가지고 새로운 도전을 두려워하지 않는 탐험가"];
+    const answer2List = ["교수설계, 교육평가 등의 HRD 세션",
+                   "차둥이들과 더 친해질 수 있는 YB네트워킹",
+                   "팀원들의 다양한 아이디어를 모아 함께 힘을 합치니 더 좋은 결과가 나와서 너무 짜릿해!",
+                   "HR이라는 같은 관심사를 가지고 함께하는 사람들과 다양한 협업 프로그램",
+                   "사람들과 활발하게 협력하여 시너지를 내는 분위기 메이커"];
+    const answer3List = ["",
+                   "",
+                   "처음엔 쉽지 않았는데, 끈기있게 몰입해서 최선의 결과물을 내게 되어 정말 기쁘다!",
+                   "끈기와 몰입을 바탕으로 HR 관련 다양한 경험을 쌓을 수 있는 유연한 문화",
+                   "꿈을 위한 목표를 설정하고 끊임없이 나아가는 마라토너"];
+    const answerList = [answer1List, answer2List, answer3List];
+    const resultList = ["💚 새로운 배움을 찾아가는 것을 즐겨요.<br />💚 언제나 열린 마음으로 기존의 사고방식을 확장하려 노력해요.<br />💚 경험을 통해 배우고 성장하는 과정을 중요하게 생각해요.<br /><br />🍀 차세대의 HR Bite 및 Fill-In-Sight 활동을 추천해요.<br /><a href='https://m.blog.naver.com/next_hr_academy/223740171573?referrerCode=1&from=thumbnailList' class='recommend-link'>　HR Bite 자세히 알아보기　</a><br /><br /><span class='highlight'>🌸 37기 인재상에 부합하는 당신,<br />차세대 HR 아카데미에 지원하세요!</span>",
+                   "💚 다른 사람들의 의견을 경청하고 존중해요.<br />💚 갈등이 있을 때에 중재자의 역할을 자처해요.<br />💚 함께 일하는 사람들과 협력해 시너지를 창출하려 노력해요.<br /><br />🍀 차세대의 프로젝트와 차클리핑 활동을 추천해요.<br /><a href='https://m.blog.naver.com/next_hr_academy/223740170384?referrerCode=1&from=thumbnailList' class='recommend-link'>　프로젝트 자세히 알아보기　</a><br /><br /><span class='highlight'>🌷 37기 인재상에 부합하는 당신,<br />차세대 HR 아카데미에 지원하세요!</span>",
+                   "💚 계획을 꾸준히 실행해 작은 성취를 쌓아가는 것을 즐겨요.<br />💚 어려운 상황에서도 끈기있게 문제를 해결하려해요.<br />💚 계속 목표를 향해 나아가는 것이 중요한 가치라 생각해요.<br /><br />🍀 차세대의 HR 교육 및 HR-flection 활동을 추천해요.<br /><a href='https://m.blog.naver.com/next_hr_academy/223740166374?referrerCode=1&from=thumbnailList' class='recommend-link'>　HR 교육 자세히 알아보기　</a><br /><br /><span class='highlight'>🌼 37기 인재상에 부합하는 당신,<br />차세대 HR 아카데미에 지원하세요!</span>"];
+
+    let MY_TYPE = 0;
+    let temp_TYPE = 0;
+
+    const TYPE_IMMERSION = 0;
+    const TYPE_GROWTH = 1;
+    const TYPE_COOPERATION = 2;
+    const typeList = ["개방", "조화", "지속"];
+    const iconList = ["🌸", "🌷", "🌼"]
+    const result_type = [];
+
+    const addResult = (question, answer) => {
+        if (question == 1 && answer == 1) temp_TYPE = TYPE_GROWTH;
+        if (question == 1 && answer == 2) temp_TYPE = TYPE_COOPERATION;
+        if (question == 2 && answer == 1) result_type.push(TYPE_GROWTH);
+        if (question == 2 && answer == 2) result_type.push(TYPE_IMMERSION);
+        if (question == 2 && answer == 3) result_type.push(TYPE_COOPERATION);
+        if (question == 3 && answer == 1) result_type.push(TYPE_GROWTH);
+        if (question == 3 && answer == 2) result_type.push(TYPE_COOPERATION);
+        if (question == 3 && answer == 3) result_type.push(TYPE_IMMERSION);
+        if (question == 4 && answer == 1) result_type.push(TYPE_IMMERSION);
+        if (question == 4 && answer == 2) result_type.push(TYPE_GROWTH);
+        if (question == 4 && answer == 3) result_type.push(TYPE_COOPERATION);
+    }
+
+    const findType = () => {
+        const immersion = result_type.filter((t) => t == TYPE_IMMERSION).length;
+        const growth = result_type.filter((t) => t == TYPE_GROWTH).length;
+        const cooperation = result_type.filter((t) => t == TYPE_COOPERATION).length;
+        if (immersion > growth && immersion > cooperation) MY_TYPE = TYPE_IMMERSION;
+        if (growth > immersion && growth > cooperation) MY_TYPE = TYPE_GROWTH;
+        if (cooperation > immersion && cooperation > growth) MY_TYPE = TYPE_COOPERATION;
+        if (growth == immersion) MY_TYPE = temp_TYPE;
+    }
+
+    const changePage = async (e) => {
+        addResult(currentQuestion, e.target.classList[1].split("-")[1]);
+
+        e.target.style.backgroundColor = "#ffffff";
+        e.target.style.fontWeight = "600";
+
+        setTimeout(function() {
+            e.target.style.backgroundColor = "#A6CD5A";
+            e.target.style.fontWeight = "500";
+            currentQuestion++;
+            document.querySelector('.bar-progress').style.width = `${10 + 24 * currentQuestion}px`;
+            if (currentQuestion == 5) {
+                findType();
+                document.querySelector('.question p').style.display = 'none';
+                document.querySelector('.answer-1').style.display = 'none';
+                document.querySelector('.answer-2').style.display = 'none';
+                document.querySelector('.answer-3').style.display = 'none';
+                document.querySelector('.loading-page').style.display = 'block';
+
+                setTimeout(function() {
+                    document.querySelector('.loading-page').style.display = 'none';
+                    document.querySelector('.question p').style.display = 'block';
+                    document.querySelector('.question p').innerHTML = `당신은 <span style="font-weight: 600; color: #ffe785;">${typeList[MY_TYPE]}</span>형 인재입니다.<br /><span style="font-size: 35px; line-height: 50px;">${iconList[MY_TYPE]}</span>`;
+                    document.querySelector('.result').style.display = 'block';
+                    document.querySelector('.result').innerHTML = resultList[MY_TYPE];
+                }, 1200);
+
+            } else {
+                document.querySelector('.question p').innerHTML = questionList[currentQuestion];
+                document.querySelector('.answer-1').innerHTML = answer1List[currentQuestion];
+                document.querySelector('.answer-2').innerHTML = answer2List[currentQuestion];
+                if (currentQuestion >= 2) {
+                    document.querySelector('.question-page').style.top = '0px';
+                    document.querySelector('.answer-3').style.display = 'block';
+                    document.querySelector('.answer-3').innerHTML = answer3List[currentQuestion];
+                }
+            }
+        }, 100);
+    };
+
+    // Description Page -> Question Page
+    document.querySelector('.start').addEventListener('click', (e) => {
+        e.target.style.backgroundColor = "#A6CD5A";
+        e.target.style.fontWeight = "600";
+        setTimeout(function() {
+            document.querySelector('.first-page').style.display = 'none';
+            document.querySelector('.question-page').style.display = 'block';
+        }, 100);
+    });
+
+    document.querySelectorAll('.answer').forEach((button) => {
+        button.addEventListener('click', changePage);
+    });
+
+    document.querySelector('.register-1').addEventListener('click', (e) => {
+        document.querySelector('.black-container').style.display = 'block';
+    });
+    document.querySelector('.close').addEventListener('click', (e) => {
+        document.querySelector('.black-container').style.display = 'none';
+    });
+    
+    Kakao.init('bf0f27bb133592d8ee9cbc2e482289f4');
+    document.querySelector('#kakao-link-btn').addEventListener('click', (e) => {
+        console.log(1);
+        e.preventDefault();
+        Kakao.Link.sendCustom({
+            templateId : 110637
+        });
+    });
+</script>
+</html>
